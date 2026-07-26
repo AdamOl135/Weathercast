@@ -1,11 +1,12 @@
 import streamlit as st
 
-#st.write("something")
 
-with (st.container(border = True, horizontal = True)):
+with (st.container(border = True,horizontal=True, horizontal_alignment = "distribute")):
 
-    logo = "Logo"
+    logo = st.image("PCLOUDY1.png")
     name = "Weathercast"
     search = "search"
 
-    st.write(logo,name,search)
+    st.write(logo)
+    st.write(name)
+    st.write(search)
