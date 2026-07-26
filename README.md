@@ -13,5 +13,5 @@
 * **Architecture:** Structured the codebase inside `src/` to practice maintainable project layout.
 
 
-## Credits
+### Credits
 - Weather Icons: [WeatherNowIcons from Grabster](https://github.com/Grabstertv/WeatherNowIcons)
