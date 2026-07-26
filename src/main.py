@@ -1,11 +1,19 @@
 import streamlit as st
 
-#st.write("something")
+st.title("title")
 
-with (st.container(border = True, horizontal = True)):
 
-    logo = "Logo"
-    name = "Weathercast"
-    search = "search"
+# top row with logo, app name and search function
+with (st.container(border = True,horizontal=True, horizontal_alignment = "distribute",width="stretch")):
 
-    st.write(logo,name,search)
+
+
+    logo = st.image("assets/PCLOUDY1.png",width= 30)
+    logo.space = ("stretch")
+    name = st.write("Weathercast")
+
+    #spacing between elements
+    st.space("stretch")
+
+    #search button for city with max input as safety precaution
+    search = st.text_input(label="search for city",max_chars=100)
