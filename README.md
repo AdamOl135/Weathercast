@@ -1,5 +1,5 @@
 ## A weather app made with streamlit and the open-meteo Api, using the python requests library for calls 
-![Alt text](PCLOUDY1.png)
+![](assets/PCLOUDY1.png)
 
 
 
