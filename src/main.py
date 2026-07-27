@@ -10,15 +10,28 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     #spacing between elements
     st.space("stretch")
 
+
     #search button for city with max input as safety precaution
     search = st.text_input(label = "placeholder", label_visibility="collapsed", max_chars=100,
                            placeholder= "Search for City")
 
+    st.text(search)
 
+    def search_func():
+        return search
+
+
+
+
+
+
+
+
+# middle row with most important information
 
 x = "assets/PCLOUDY1.png" #weather dependent picture
 
-# middle row with most important information
+
 with st.container():
 
     # spacing from top

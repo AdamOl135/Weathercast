@@ -1,7 +1,7 @@
 ## A weather app made with streamlit and the open-meteo Api, using the python requests library for calls 
 ![](assets/PCLOUDY1.png)
 
-
+The Openmeteo api was chosen because of its clear documentation for python and requiring no api key
 
 
 
