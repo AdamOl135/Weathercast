@@ -1,6 +1,4 @@
-
 import streamlit as st
-
 
 #top row with logo, app name and search function
 with st.container(horizontal=True, horizontal_alignment = "distribute",width="stretch"):
@@ -37,10 +35,34 @@ with st.container():
 
 
 
+
+
     #right column
     with right:
 
-        #Humidity,Wind Speed, UV
+        #Humidity,Wind Speed, UV, sunrise/set
         st.metric(label = "Humidity",value = f"{80}%",border = True)
         st.metric(label = "Wind Speed",value = f"{20}km/h",border=True)
-        st.metric()
+        st.metric(label = "UV",value = f"{7}",border = True)
+        st.metric(label = "Sunrise",value = f"{21}",border = True)
+
+
+
+
+# bottom bar with info
+with st.bottom:
+    with st.container(border=True, horizontal=True):
+        st.link_button(label = "github",url = "https://github.com/AdamOl135/Weathercast",type = "tertiary")
+
+
+
+
+
+
+
+
+
+
+
+
+
