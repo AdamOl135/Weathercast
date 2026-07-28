@@ -1,5 +1,7 @@
 import openmeteo_requests
 import requests
+import time
+
 
 
 #calling client
@@ -23,14 +25,18 @@ params_geocoding = {
 #request to server
 responses_geocoding = requests.get(url_geocoding,params = params_geocoding)
 
+#temporary solution for api request spam (10000 per day)
+time.sleep(1)
+
 #response info from server(json)
 geocode_body = responses_geocoding.json()
 
 # given location to server and converted to coordinates
-latitude = geocode_body["results"][0]["latitude"]
-longitude = geocode_body["results"][0]["longitude"]
+latitude_input = geocode_body["results"][0]["latitude"]
+longitude_input = geocode_body["results"][0]["longitude"]
 
-
+print(latitude_input)
+print(longitude_input)
 
 
 
@@ -38,24 +44,27 @@ longitude = geocode_body["results"][0]["longitude"]
 
 url_forecast = "https://api.open-meteo.com/v1/forecast"
 
+#input params for request
 params_forecast = {
-	"latitude": latitude,# params get passed from user input to geocoding to here
-	"longitude": longitude,#
-	"daily": ["temperature_2m_max", "temperature_2m_min", "sunrise", "sunset", "daylight_duration", "sunshine_duration"],
-	"hourly": ["temperature_2m", "precipitation", "cloud_cover", "visibility", "is_day", "lightning_potential"],
-	"models": "dwd_icon_seamless",
-	"current": ["temperature_2m", "relative_humidity_2m", "precipitation", "rain", "showers", "snowfall", "wind_speed_10m", "apparent_temperature"],
+	"latitude": latitude_input,# params get passed from user input to geocoding to here
+	"longitude": longitude_input,#
+	"daily": ["sunrise", "sunset", "temperature_2m_max", "temperature_2m_min"],
+	"hourly": ["temperature_2m", "precipitation"],
+	"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall"],
 	"timezone": "Europe/Berlin",
 }
 
-
+#request to api
 responses_forecast = openmeteo.weather_api(url_forecast, params = params_forecast)
 
 #if more locations need processing -> for loop
 
 response_forecast = responses_forecast[0]
+print(response_forecast)
+
+
+
 
 #general info - time independent
-
 
 print(f"Coordinates forecast:{response_forecast.Latitude()},")

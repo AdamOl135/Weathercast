@@ -1,3 +1,4 @@
+
 import streamlit as st
 
 #top row with logo, app name and search function
@@ -13,12 +14,12 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
     #search button for city with max input as safety precaution
     search = st.text_input(label = "placeholder", label_visibility="collapsed", max_chars=100,
-                           placeholder= "Search for City")
+                           placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=True)
 
     st.text(search)
 
     def search_func():
-        return search
+        st.write("hallo")
 
 
 
@@ -46,10 +47,6 @@ with st.container():
         st.metric(label="Temperature",value = f"{37}°C") #st.image(f"{x}")
         st.write(f"feels like {""} degrees")
 
-
-
-
-
     #right column
     with right:
 
@@ -66,10 +63,6 @@ with st.container():
 with st.bottom:
     with st.container(border=True, horizontal=True):
         st.link_button(label = "github",url = "https://github.com/AdamOl135/Weathercast",type = "tertiary")
-
-
-
-
 
 
 
