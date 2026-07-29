@@ -1,5 +1,7 @@
-
 import streamlit as st
+import weather
+
+
 
 #top row with logo, app name and search function
 with st.container(horizontal=True, horizontal_alignment = "distribute",width="stretch"):
@@ -18,11 +20,6 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
     st.text(search)
 
-    def search_func():
-        st.write("hallo")
-
-
-
 
 
 
@@ -37,24 +34,24 @@ with st.container():
 
     # spacing from top
     st.space("large")
-    left,right = st.columns([0.7,0.3],vertical_alignment="top")
+    left,right = st.columns([0.5,0.5],vertical_alignment="top")
 
     #left column
     with left:
 
         #temperature,logo,relativetemp
         st.markdown("**Current Weather**")
-        st.metric(label="Temperature",value = f"{37}°C") #st.image(f"{x}")
-        st.write(f"feels like {""} degrees")
+        st.metric(label="Temperature",value = f"{round(weather.weather_data.current_temperature,1)}°C") #st.image(f"{x}")
+        st.write(f"feels like {round(weather.weather_data.current_apparent_temperature,2)} degrees")
 
     #right column
     with right:
 
         #Humidity,Wind Speed, UV, sunrise/set
-        st.metric(label = "Humidity",value = f"{80}%",border = True)
-        st.metric(label = "Wind Speed",value = f"{20}km/h",border=True)
-        st.metric(label = "UV",value = f"{7}",border = True)
-        st.metric(label = "Sunrise",value = f"{21}",border = True)
+        st.metric(label = "Humidity",value = f"{weather.weather_data.current_relative_humidity}%",border = True)
+        st.metric(label = "Wind Speed",value = f"{round(weather.weather_data.current_wind_speed,1)}km/h",border=True)
+        st.metric(label = "UV",value = f"{""}",border = True)
+        st.metric(label = "Sunrise",value = f"{weather.weather_data.daily_sunrise_converted_oneday[11:16]}",border = True)
 
 
 
