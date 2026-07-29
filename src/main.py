@@ -23,8 +23,6 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
 
 
-
-
 # middle row with most important information
 
 x = "assets/PCLOUDY1.png" #weather dependent picture
@@ -42,7 +40,7 @@ with st.container():
         #temperature,logo,relativetemp
         st.markdown("**Current Weather**")
         st.metric(label="Temperature",value = f"{round(weather.weather_data.current_temperature,1)}°C") #st.image(f"{x}")
-        st.write(f"feels like {round(weather.weather_data.current_apparent_temperature,2)} degrees")
+        st.write(f"feels like {round(weather.weather_data.current_apparent_temperature,1)} degrees")
 
     #right column
     with right:
@@ -55,11 +53,8 @@ with st.container():
 
 
 
-
 # bottom bar with info
 with st.bottom:
     with st.container(border=True, horizontal=True):
         st.link_button(label = "github",url = "https://github.com/AdamOl135/Weathercast",type = "tertiary")
-
-
 
