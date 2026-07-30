@@ -68,7 +68,7 @@ print("FROM HERE FORECAST STATEMENTS\n")
 #info from forecast api - time independent
 
 
-class weather_data:
+class Weather_Data:
 	#process non categorical
 	latitude_forecast =response_forecast.Latitude()
 	longitude_forecast = response_forecast.Longitude()
@@ -109,20 +109,20 @@ class weather_data:
 	# 1970), converted to int from array and reduced from 1 week to one day (index 0)
 
 	#converted to gmtime and added offset from weatherdata
-	daily_sunrise_gmtime_adjusted = time.asctime(time.gmtime(daily_sunrise +
-	                                                        timezone_difference_toGMT0))
-	#converted to gmtime and added offset from weatherdata
-	daily_sunset_gmtime_adjusted = time.asctime(time.gmtime(daily_sunset +
-	                                                        timezone_difference_toGMT0))
+	daily_sunrise_gmtime_adjusted = time.asctime(time.gmtime(daily_sunrise + timezone_difference_toGMT0))
+	daily_sunset_gmtime_adjusted = time.asctime(time.gmtime(daily_sunset + timezone_difference_toGMT0))
 
-	daily_temperature_2m_max = daily.Variables(2).ValuesAsNumpy()  # 1 week
-	daily_temperature_2m_min = daily.Variables(3).ValuesAsNumpy()  # 1 week
+	#convert with slicing first and then to int
+	daily_temperature_2m_max = (daily.Variables(2).ValuesAsNumpy())[0]#1 week sliced to 1day
+	daily_temperature_2m_max_int= int(daily_temperature_2m_max)#converted to int
+
+	daily_temperature_2m_min = (daily.Variables(3).ValuesAsNumpy())[0]#1 week sliced to 1day
+	daily_temperature_2m_min_int = int(daily_temperature_2m_min)#converted to int
 
 
-
-print("sunrise int & indexed",weather_data.daily_sunrise,"sunset int & indexed",weather_data.daily_sunset)
-print("converted with gmtime and timezoneadjusted",weather_data.daily_sunrise_gmtime_adjusted)
-print("daily sunrise indexed",weather_data.daily_sunrise)
+print("\nsunrise int & indexed",Weather_Data.daily_sunrise,"sunset int & indexed",Weather_Data.daily_sunset)
+print("converted with gmtime and timezoneadjusted",Weather_Data.daily_sunrise_gmtime_adjusted)
+print("daily sunrise indexed",Weather_Data.daily_sunrise)
 
 
 
