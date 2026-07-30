@@ -11,7 +11,7 @@ openmeteo = openmeteo_requests.Client()
 #GEOCODING
 
 #user input for city
-city_search_name = "bucharest"
+city_search_name = "Lima"
 
 # minimum 3 letters for search to work / location or postal code
 url_geocoding = "https://geocoding-api.open-meteo.com/v1/search"
@@ -77,6 +77,7 @@ class weather_data:
 	timezone_difference_toGMT0 =response_forecast.UtcOffsetSeconds()
 	print("forecast timezone",timezone)
 	print("forecast timezone difference to gmt0",timezone_difference_toGMT0)
+	print("forecast timezone difference to gmt0",type(timezone_difference_toGMT0),"\n")
 
 	#process current data (indexing dependent on params_forecast order)
 
@@ -100,26 +101,28 @@ class weather_data:
 
 
 	#process daily data (indexing dependent on params_forecast order)
+
 	daily = response_forecast.Daily()
-	daily_sunrise = daily.Variables(0).ValuesInt64AsNumpy()#unix epoch (seconds since 1970)
-	daily_sunset = daily.Variables(1).ValuesInt64AsNumpy()#unix epoch (seconds since 1970)
+	daily_sunrise = int((daily.Variables(0).ValuesInt64AsNumpy())[0])#unix epoch (seconds since#
+	# 1970), converted to int from array and reduced from 1 week to one day (index 0)
+	daily_sunset = int((daily.Variables(1).ValuesInt64AsNumpy())[0])#unix epoch (seconds since#
+	# 1970), converted to int from array and reduced from 1 week to one day (index 0)
+
+	#converted to gmtime and added offset from weatherdata
+	daily_sunrise_gmtime_adjusted = time.asctime(time.gmtime(daily_sunrise +
+	                                                        timezone_difference_toGMT0))
+	#converted to gmtime and added offset from weatherdata
+	daily_sunset_gmtime_adjusted = time.asctime(time.gmtime(daily_sunset +
+	                                                        timezone_difference_toGMT0))
 
 	daily_temperature_2m_max = daily.Variables(2).ValuesAsNumpy()  # 1 week
 	daily_temperature_2m_min = daily.Variables(3).ValuesAsNumpy()  # 1 week
 
-	#converted from array with 1 week info to int with 1 day info
-	daily_sunrise_converted_oneday2 = int(daily_sunrise[0])
-
-	# converted sunrise/sunset from unix to date and one day
-	#todo, convert gm time with given timezone into offset and add to sunrise/set, offset already in forecast variables
-	daily_sunset_converted_timeadjusted_3 = time.asctime(time.gmtime(daily_sunrise_converted_oneday2,),)
 
 
-
-
-print("sunrise unprocessed",weather_data.daily_sunrise[0],"sunset unprocessed",weather_data.daily_sunset[0])
-print("converted with gmtime",weather_data.daily_sunset_converted_timeadjusted_3)
-
+print("sunrise int & indexed",weather_data.daily_sunrise,"sunset int & indexed",weather_data.daily_sunset)
+print("converted with gmtime and timezoneadjusted",weather_data.daily_sunrise_gmtime_adjusted)
+print("daily sunrise indexed",weather_data.daily_sunrise)
 
 
 

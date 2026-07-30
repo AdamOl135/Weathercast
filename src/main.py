@@ -46,10 +46,12 @@ with st.container():
     with right:
 
         #Humidity,Wind Speed, UV, sunrise/set
-        st.metric(label = "Humidity",value = f"{weather.weather_data.current_relative_humidity}%",border = True)
+        st.metric(label = "Humidity",value = f"{round(weather.weather_data.current_relative_humidity,1)}%",border = True)
         st.metric(label = "Wind Speed",value = f"{round(weather.weather_data.current_wind_speed,1)}km/h",border=True)
         st.metric(label = "UV",value = f"{""}",border = True)
-        st.metric(label = "Sunrise",value = f"{weather.weather_data.daily_sunrise_converted_oneday[11:16]}",border = True)
+        st.metric(label = "Sunrise",value = f"{weather.weather_data.daily_sunrise_gmtime_adjusted[11:16]}",border = True)
+        st.metric(label = "Sunset",value = f"{weather.weather_data.daily_sunset_gmtime_adjusted[11:16]}",border = True)
+
 
 
 
