@@ -11,7 +11,7 @@ openmeteo = openmeteo_requests.Client()
 #GEOCODING
 
 #user input for city
-city_search_name = "Lima"
+city_search_name = "Budapest"
 
 # minimum 3 letters for search to work / location or postal code
 url_geocoding = "https://geocoding-api.open-meteo.com/v1/search"
@@ -23,7 +23,13 @@ params_geocoding = {
 }
 
 #request to server
-responses_geocoding = requests.get(url_geocoding,params = params_geocoding)
+
+responses_geocoding = requests.get(url_geocoding,params = params_geocoding,timeout=1)
+print("status code:",responses_geocoding.status_code)
+
+
+def geocoding_function():
+	return responses_geocoding
 
 #temporary solution for api request spam (10000 per day)
 time.sleep(0)

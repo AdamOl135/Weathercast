@@ -1,14 +1,12 @@
 import streamlit as st
 import weather
 
-
-
 #top row with logo, app name and search function
 with st.container(horizontal=True, horizontal_alignment = "distribute",width="stretch"):
 
     #logo & Title
     logo = st.image("assets/PCLOUDY1.png",width = 30,output_format="PNG")
-    name = st.markdown("***Weathercast***")
+    name = st.title("Weathercast")
 
     #spacing between elements
     st.space("stretch")
@@ -16,15 +14,13 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
     #search button for city with max input as safety precaution
     search = st.text_input(label = "placeholder", label_visibility="collapsed", max_chars=100,
-                           placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False)
-
+                               placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False,)
     st.text(search)
 
 
 # middle row with most important information
 
 x = "assets/PCLOUDY1.png" #weather dependent picture
-
 
 with st.container():
 
@@ -36,7 +32,7 @@ with st.container():
     with left:
 
         #temperature,logo,relativetemp, min/max temp daily
-        st.markdown("**Current Weather**")
+        st.subheader("Current Weather")
         st.metric(label="Temperature",value = f"{round(weather.Weather_Data.current_temperature,1)}°C") #st.image(f"{x}")
         st.markdown(f"Feels like {round(weather.Weather_Data.current_apparent_temperature,1)}°C")
         st.markdown(f"Daily max temp {weather.Weather_Data.daily_temperature_2m_max_int}°C")
