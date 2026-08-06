@@ -3,38 +3,37 @@ import requests
 import time
 
 
-
 #calling client
 openmeteo = openmeteo_requests.Client()
 
 
 #GEOCODING
 
-#user input for city
-city_search_name = "Budapest"
+def get_city(input_city:str)->str:
+	return input_city
+
+current_city = get_city()
+
+print(current_city)
+print(type(current_city))
 
 # minimum 3 letters for search to work / location or postal code
 url_geocoding = "https://geocoding-api.open-meteo.com/v1/search"
 
-
 params_geocoding = {
-	"name":city_search_name,
-	"count":1
+	"name": current_city,
+	"count": 1
 }
 
-#request to server
+# request to server
 
-responses_geocoding = requests.get(url_geocoding,params = params_geocoding,timeout=1)
-print("status code:",responses_geocoding.status_code)
+responses_geocoding = requests.get(url_geocoding, params=params_geocoding, timeout=1)
+print("status code:", responses_geocoding.status_code)
 
-
-def geocoding_function():
-	return responses_geocoding
-
-#temporary solution for api request spam (10000 per day)
+# temporary solution for api request spam (10000 per day)
 time.sleep(0)
 
-#response info from server(json)
+# response info from server(json)
 geocode_body = responses_geocoding.json()
 
 # given location to server and converted to coordinates and timezone
@@ -43,9 +42,6 @@ longitude_geocode = geocode_body["results"][0]["longitude"]
 timezone_geocode = geocode_body["results"][0]["timezone"]
 
 
-print("latitude geocode",latitude_geocode)
-print("longitude_geocode",longitude_geocode)
-print("timezone",timezone_geocode,"\n")
 
 
 # FORECAST
@@ -88,7 +84,7 @@ class Weather_Data:
 	#process current data (indexing dependent on params_forecast order)
 
 	current = response_forecast.Current()
-	current_time = current.Time()#unix epoch (seconds since 1970)
+	current_time = current.Time()#unix ephttps://weathercast-app.streamlit.app/och (seconds since 1970)
 	current_temperature = current.Variables(0).Value()
 	current_relative_humidity = current.Variables(1).Value()
 	current_apparent_temperature = current.Variables(2).Value()
