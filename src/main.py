@@ -1,5 +1,5 @@
 import streamlit as st
-import weather
+from weather import get_city
 
 
 #top row with logo, app name and search function
@@ -18,12 +18,10 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
                                placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False,)
     st.text(search)
 
-weather.get_city("Mannheim")
-
-
-
-
-
+    if search == None:
+        default_weather_info = get_city("Berlin")
+    else:
+        all_weather_info = get_city(search)
 
 
 
@@ -44,21 +42,21 @@ with st.container():
 
         #temperature,logo,relativetemp, min/max temp daily
         st.subheader(f"{search} Weather")
-        st.metric(label="Temperature",value = f"{round(weather.Weather_Data.current_temperature,1)}°C") #st.image(f"{x}")
-        st.markdown(f"Feels like {round(weather.Weather_Data.current_apparent_temperature,1)}°C")
-        st.markdown(f"Daily max temp {weather.Weather_Data.daily_temperature_2m_max_int}°C")
-        st.markdown(f"Daily min temp {weather.Weather_Data.daily_temperature_2m_min_int}°C")
+        st.metric(label="Temperature",value = f"{round(all_weather_info[0],1)}°C") #st.image(f"{x}")
+        st.markdown(f"Feels like {round(all_weather_info[1],1)}°C")
+        st.markdown(f"Daily max temp {all_weather_info[2]}°C")
+        st.markdown(f"Daily min temp {all_weather_info[3]}°C")
 
 
     #right column
     with right:
 
         #Humidity,Wind Speed, UV, sunrise/set
-        st.metric(label = "Humidity",value = f"{round(weather.Weather_Data.current_relative_humidity,1)}%",border = True)
-        st.metric(label = "Wind Speed",value = f"{round(weather.Weather_Data.current_wind_speed,1)}km/h",border=True)
+        st.metric(label = "Humidity",value = f"{round(all_weather_info[4],1)}%",border = True)
+        st.metric(label = "Wind Speed at 10m height",value = f"{round(all_weather_info[5],1)}km/h",border=True)
         st.metric(label = "UV",value = f"{""}",border = True)
-        st.metric(label = "Sunrise",value = f"{weather.Weather_Data.daily_sunrise_gmtime_adjusted[11:16]}",border = True)
-        st.metric(label = "Sunset",value = f"{weather.Weather_Data.daily_sunset_gmtime_adjusted[11:16]}",border = True)
+        st.metric(label = "Sunrise",value = f"{all_weather_info[6][11:16]}",border = True)
+        st.metric(label = "Sunset",value = f"{all_weather_info[7][11:16]}",border = True)
 
 
 # bottom bar with info
