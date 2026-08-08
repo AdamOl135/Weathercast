@@ -1,27 +1,44 @@
 import streamlit as st
 from weather import get_city
 
+st.set_page_config(
+    page_title="Weathercast",
+    page_icon="assets/PCLOUDY1.png",
+    layout = "wide",
+    menu_items={
+        'Report a bug': "https://www.extremelycoolapp.com/bug",
+        'About': "# This is a header. This is an *extremely* cool app!"
+    })
 
 #top row with logo, app name and search function
 with st.container(horizontal=True, horizontal_alignment = "distribute",width="stretch"):
 
     #logo & Title
-    logo = st.image("assets/PCLOUDY1.png",width = 30,output_format="PNG")
-    name = st.text("Weathercast")
+    logo = st.image(image="assets/PCLOUDY1.png",width = 35,output_format="PNG")
+    name = st.subheader(body="Weathercast",text_alignment="left",divider="grey")
 
     #spacing between elements
     st.space("stretch")
 
 
     #search button for city with max input as safety precaution
-    search = st.text_input(label = "placeholder", label_visibility="collapsed", max_chars=100,
-                               placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False,value="Berlin")
+    search = st.text_input(
+    label = "placeholder",
+    label_visibility="collapsed",
+    max_chars=100,
+    placeholder = "Search for City",
+    persist_state= "page",
+    key="CityInput",
+    disabled=False,
+    value="Berlin",
+    icon=":material/search:",
+    width=300)
 
 
     all_weather_info = get_city(search)
 
 
-
+#todo : seperated words cannot be input into search, fix
 
 
 # middle row with most important information
