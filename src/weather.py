@@ -20,12 +20,12 @@ def get_city(input_city:str):
 	}
 
 	# request to server
-
+	# temporary solution for api request spam (10000 per day)
+	time.sleep(1)
 	responses_geocoding = requests.get(url_geocoding, params=params_geocoding, timeout=1)
 	print("status code:", responses_geocoding.status_code)
 
-	# temporary solution for api request spam (10000 per day)
-	time.sleep(0)
+
 
 	# response info from server(json)
 	geocode_body = responses_geocoding.json()
@@ -53,6 +53,8 @@ def get_city(input_city:str):
 	}
 
 	#request to api
+	# temporary solution for api request spam (10000 per day)
+	time.sleep(0.5)
 	responses_forecast = openmeteo.weather_api(url_forecast, params = params_forecast)
 
 	#if more locations need processing -> for loop
@@ -64,7 +66,7 @@ def get_city(input_city:str):
 	#info from forecast api - time independent
 
 
-	class Weather_Data:
+	class WeatherData:
 		#process non categorical
 		latitude_forecast =response_forecast.Latitude()
 		longitude_forecast = response_forecast.Longitude()
@@ -117,14 +119,14 @@ def get_city(input_city:str):
 
 
 	#needed values for app returned to main for usage
-	return [Weather_Data.current_temperature,
-			Weather_Data.current_apparent_temperature,
-			Weather_Data.daily_temperature_2m_max_int,
-			Weather_Data.daily_temperature_2m_min_int,
-			Weather_Data.current_relative_humidity,
-			Weather_Data.current_wind_speed,
-			Weather_Data.daily_sunrise_gmtime_adjusted,
-			Weather_Data.daily_sunset_gmtime_adjusted
+	return [WeatherData.current_temperature,
+			WeatherData.current_apparent_temperature,
+			WeatherData.daily_temperature_2m_max_int,
+			WeatherData.daily_temperature_2m_min_int,
+			WeatherData.current_relative_humidity,
+			WeatherData.current_wind_speed,
+			WeatherData.daily_sunrise_gmtime_adjusted,
+			WeatherData.daily_sunset_gmtime_adjusted
 
 	]
 
