@@ -1,5 +1,5 @@
 # STILL UNFINISHED
 requests == 2.34.2
-streamlit == 1.60.0
+streamlit == 1.61.0
 openmeteo-requests == 1.7.5
 

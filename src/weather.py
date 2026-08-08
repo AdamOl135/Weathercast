@@ -54,7 +54,7 @@ def get_city(input_city:str):
 
 	#request to api
 	# temporary solution for api request spam (10000 per day)
-	time.sleep(0.5)
+	time.sleep(1)
 	responses_forecast = openmeteo.weather_api(url_forecast, params = params_forecast)
 
 	#if more locations need processing -> for loop
@@ -81,7 +81,7 @@ def get_city(input_city:str):
 
 		current = response_forecast.Current()
 		current_time = current.Time()#unix ephttps://weathercast-app.streamlit.app/och (seconds since 1970)
-		current_temperature = current.Variables(0).Value()
+		current_temperature = round((current.Variables(0).Value()),1)
 		current_relative_humidity = current.Variables(1).Value()
 		current_apparent_temperature = current.Variables(2).Value()
 		current_is_day = current.Variables(3).Value()
