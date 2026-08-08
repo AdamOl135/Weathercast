@@ -15,13 +15,10 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
     #search button for city with max input as safety precaution
     search = st.text_input(label = "placeholder", label_visibility="collapsed", max_chars=100,
-                               placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False,)
-    st.text(search)
+                               placeholder= "Search for City",persist_state= "page",key="CityInput",disabled=False,value="Berlin")
 
-    if search == None:
-        default_weather_info = get_city("Berlin")
-    else:
-        all_weather_info = get_city(search)
+
+    all_weather_info = get_city(search)
 
 
 
