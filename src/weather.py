@@ -104,7 +104,7 @@ def get_city(input_city:str):
 		hourly_temperature = hourly.Variables(0).ValuesAsNumpy()#hours of 1 week
 		hourly_precipitation = hourly.Variables(1).ValuesAsNumpy()#hours of 1 week
 		hourly_uv_index = hourly.Variables(2).ValuesAsNumpy()
-
+		hourly_uv_index_1hour = int(hourly_uv_index[0])
 
 		#process daily data (indexing dependent on params_forecast order)
 
@@ -142,9 +142,10 @@ def get_city(input_city:str):
 			WeatherData.current_showers,#12
 			WeatherData.current_snowfall,#13
 			WeatherData.current_cloud_cover,#14
-			WeatherData.minutely_15_lightning_potential#15
+			WeatherData.minutely_15_lightning_potential,#15
+			WeatherData.hourly_uv_index_1hour#16
 	#todo : metric to imperial coversion if requested
 	]
 
 
-print("lightning:",(get_city("Bangkok")[15]))
+print("lightning:",(get_city("Bangkok")[16]))

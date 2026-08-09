@@ -113,16 +113,16 @@ with left:
     st.subheader(f"{search} Weather")
     with st.container(horizontal=True):
         st.metric(label=f"**Temperature**",value = f"{round(all_weather_info[0],1)}°C",icon = ":material/thermometer:",width="content")
-        #st.text("affe")
         st.image(weather_icon,width="content")
     st.markdown(f"Feels like {round(all_weather_info[1],1)}°C")
     st.markdown(f"Daily max temp {all_weather_info[2]}°C")
     st.markdown(f"Daily min temp {all_weather_info[3]}°C")
 
+#middle column
 with middle :
-    st.metric(label="**Humidity**", value=f"{round(all_weather_info[4], 1)}%", border=True)
-    st.metric(label="**Wind Speed at 10m height**", value=f"{round(all_weather_info[5], 1)}km/h", border=True)
-    st.metric(label="**UV**", value=f"{""}", border=True)
+    st.metric(label="**Humidity**", value=f"{round(all_weather_info[4], 1)}%", border=True,icon=":material/humidity_mid:")
+    st.metric(label="**Wind Speed at 10m height**", value=f"{round(all_weather_info[5], 1)}km/h", border=True,icon=":material/air:")
+    st.metric(label="**UV**", value=f"{all_weather_info[16]}", border=True)
 
 
 #right column
@@ -130,8 +130,8 @@ with right:
 
     #Humidity,Wind Speed, UV, sunrise/set
 
-    st.metric(label = "**Sunrise**",value = f"{all_weather_info[6][11:16]}",border = True)
-    st.metric(label = "**Sunset**",value = f"{all_weather_info[7][11:16]}",border = True)
+    st.metric(label = "**Sunrise**",value = f"{all_weather_info[6][11:16]}",border = True,icon=":material/wb_twilight:")
+    st.metric(label = "**Sunset**",value = f"{all_weather_info[7][11:16]}",border = True,icon=":material/wb_twilight_2:")
 
 
 # bottom bar with info
