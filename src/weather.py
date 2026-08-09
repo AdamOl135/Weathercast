@@ -48,7 +48,7 @@ def get_city(input_city:str):
 		"longitude": longitude_geocode,#
 		"daily": ["sunrise", "sunset", "temperature_2m_max", "temperature_2m_min"],
 		"hourly": ["temperature_2m", "precipitation","uv_index"],
-		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall"],
+		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall","cloud_cover"],
 		"timezone": f"{timezone_geocode}",
 	}
 
@@ -84,12 +84,15 @@ def get_city(input_city:str):
 		current_temperature = round((current.Variables(0).Value()),1)
 		current_relative_humidity = current.Variables(1).Value()
 		current_apparent_temperature = current.Variables(2).Value()
+
+		#icondata
 		current_is_day = current.Variables(3).Value()
 		current_precipitation = current.Variables(4).Value()
 		current_rain = current.Variables(5).Value()
 		current_wind_speed = current.Variables(6).Value()#in km/h
 		current_showers = current.Variables(7).Value()
 		current_snowfall = current.Variables(8).Value()
+		current_cloud_cover = current.Variables(9).Value()
 
 		#process hourly data (indexing dependent on params_forecast order)
 		hourly = response_forecast.Hourly()
@@ -119,19 +122,23 @@ def get_city(input_city:str):
 
 
 	#needed values for app returned to main for usage
-	return [WeatherData.current_temperature,
-			WeatherData.current_apparent_temperature,
-			WeatherData.daily_temperature_2m_max_int,
-			WeatherData.daily_temperature_2m_min_int,
-			WeatherData.current_relative_humidity,
-			WeatherData.current_wind_speed,
-			WeatherData.daily_sunrise_gmtime_adjusted,
-			WeatherData.daily_sunset_gmtime_adjusted
-
+	return [WeatherData.current_temperature,#0
+			WeatherData.current_apparent_temperature,#1
+			WeatherData.daily_temperature_2m_max_int,#2
+			WeatherData.daily_temperature_2m_min_int,#3
+			WeatherData.current_relative_humidity,#4
+			WeatherData.current_wind_speed,#5
+			WeatherData.daily_sunrise_gmtime_adjusted,#6
+			WeatherData.daily_sunset_gmtime_adjusted,#7
+			WeatherData.current_is_day,#8
+			WeatherData.current_precipitation,#9
+			WeatherData.current_rain,#10
+			WeatherData.current_wind_speed,#11
+			WeatherData.current_showers,#12
+			WeatherData.current_snowfall,#13
+			WeatherData.current_cloud_cover#14
+	#todo : metric to imperial coversion if requested
 	]
 
-#print(type(get_city("Mannheim")))
-#print(get_city("Bucharest"))
-#print(type(get_city("Budapest")[2]))
-#print(get_city("Bucharest")[6])
-print(get_city("Bucharest")[7])
+
+print("isday:",type(get_city("Bangkok")[10]))
