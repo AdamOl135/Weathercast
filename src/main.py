@@ -37,34 +37,58 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
     all_weather_info = get_city(search)
 
-    st.text(type(all_weather_info))
+    #st.text(type(all_weather_info))
 
     weather_icon = ""
 
-    #checking weather condition and changing icon based on it
+    #checking weather condition and changing icon based on it (lightning still to be added)
     # all ifs have to check isday(8), precipitation(9), snowfall(13), cloud cover(14)
 
     #night(moon)
-    if all_weather_info[8] == 0.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25:
+    if all_weather_info[8] == 0.0 and all_weather_info[9]<0.1 and all_weather_info[13]==0 and all_weather_info[14]<25:
         weather_icon = "assets/CLEAR0.png"
     #day(sun)
-    elif all_weather_info[8] == 1.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25:
+    elif all_weather_info[8] == 1.0 and all_weather_info[9]<0.1 and all_weather_info[13]==0 and all_weather_info[14]<25:
         weather_icon = "assets/CLEAR1.png"
     #night raining weakest cloud second strongest
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.4 and all_weather_info[13] == 0 and all_weather_info[14] > 50:
+    elif all_weather_info[8] == 0.0 and (0.2 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
     #day raining weakest cloud second strongest no snow
         weather_icon = "assets/HAIL0.png"
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.4 and all_weather_info[13] == 0 and all_weather_info[14] > 50:
+    elif all_weather_info[8] == 1.0 and (0.2 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
         weather_icon = "assets/HAIL1.png"
-    #day/night no precip cloud strongest snow second strongest
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.4 and all_weather_info[13] > 0 and all_weather_info[14] > 50:
+    #night no precip cloud second strongest snow  strongest
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
         weather_icon = "assets/LSNOW0.png"
-
-
-
-    else:
-        weather_icon = "assets/CLEAR1.png"
-
+    # day no precip cloud second strongest snow strongest
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/LSNOW1.png"
+    #day/night cloud strongest no snow no precipitation
+    elif all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
+        weather_icon = "assets/MCLOUDY.png"
+    #night no precip cloud second strongest no snow
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/MCLOUDY0.png"
+    #day no precip cloud second strongest no snow
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/MCLOUDY1.png"
+    # night no precip cloud weakest no snow
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] < 25:
+        weather_icon = "assets/PCLOUDY0.png"
+    # day no precip cloud weakest no snow
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] < 25:
+        weather_icon = "assets/PCLOUDY1.png"
+    #night strong precip second strongest cloud no snow
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/SHOWER0"
+    # day strong precip second strongest cloud no snow
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/SHOWER1"
+    # night light precip second strongest cloud snow
+    elif all_weather_info[8] == 0.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/SLEET0"
+    # day light precip second strongest cloud snow
+    elif all_weather_info[8] == 1.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
+        weather_icon = "assets/SLEET1"
 
 
 

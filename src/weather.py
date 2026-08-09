@@ -50,6 +50,7 @@ def get_city(input_city:str):
 		"hourly": ["temperature_2m", "precipitation","uv_index"],
 		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall","cloud_cover"],
 		"timezone": f"{timezone_geocode}",
+		"minutely_15": "lightning_potential"
 	}
 
 	#request to api
@@ -76,6 +77,10 @@ def get_city(input_city:str):
 		print("forecast timezone",timezone)
 		print("forecast timezone difference to gmt0",timezone_difference_toGMT0)
 		print("forecast timezone difference to gmt0",type(timezone_difference_toGMT0),"\n")
+
+		# Process minutely_15 data
+		minutely_15 = response_forecast.Minutely15()
+		minutely_15_lightning_potential = (minutely_15.Variables(0).ValuesAsNumpy())[0]
 
 		#process current data (indexing dependent on params_forecast order)
 
@@ -136,9 +141,10 @@ def get_city(input_city:str):
 			WeatherData.current_wind_speed,#11
 			WeatherData.current_showers,#12
 			WeatherData.current_snowfall,#13
-			WeatherData.current_cloud_cover#14
+			WeatherData.current_cloud_cover,#14
+			WeatherData.minutely_15_lightning_potential#15
 	#todo : metric to imperial coversion if requested
 	]
 
 
-print("isday:",(get_city("Bangkok")[13]))
+print("lightning:",(get_city("Bangkok")[15]))
