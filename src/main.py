@@ -42,23 +42,28 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     weather_icon = ""
 
     #checking weather condition and changing icon based on it
-    # all ifs have to check isday, precipitation, snowfall, cloud cover
+    # all ifs have to check isday(8), precipitation(9), snowfall(13), cloud cover(14)
 
     #night(moon)
-    if all_weather_info[8] == 0.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25 :
+    if all_weather_info[8] == 0.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25:
         weather_icon = "assets/CLEAR0.png"
-
     #day(sun)
-    elif all_weather_info[8] == 1.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25 :
+    elif all_weather_info[8] == 1.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25:
         weather_icon = "assets/CLEAR1.png"
-
-    #day/night raining weakest
-    elif all_weather_info[14] > 76 and all_weather_info[9] > 2.4 :
-        weather_icon = "assets/HAIL.png"
-    elif all_weather_info[14] > 50 and all_weather_info[9] > 2.4 and all_weather_info[8] == 0.0:
+    #night raining weakest cloud second strongest
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.4 and all_weather_info[13] == 0 and all_weather_info[14] > 50:
+    #day raining weakest cloud second strongest no snow
         weather_icon = "assets/HAIL0.png"
-    elif all_weather_info[14] > 50 and all_weather_info[9] > 2.4 and all_weather_info[8] == 1.0:
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.4 and all_weather_info[13] == 0 and all_weather_info[14] > 50:
         weather_icon = "assets/HAIL1.png"
+    #day/night no precip cloud strongest snow second strongest
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.4 and all_weather_info[13] > 0 and all_weather_info[14] > 50:
+        weather_icon = "assets/LSNOW0.png"
+
+
+
+    else:
+        weather_icon = "assets/CLEAR1.png"
 
 
 
