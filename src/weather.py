@@ -141,4 +141,4 @@ def get_city(input_city:str):
 	]
 
 
-print("isday:",type(get_city("Bangkok")[10]))
+print("isday:",(get_city("Bangkok")[13]))

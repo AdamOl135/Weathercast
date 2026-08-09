@@ -42,13 +42,24 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     weather_icon = ""
 
     #checking weather condition and changing icon based on it
-    if all_weather_info[8] == 0.0:
+    # all ifs have to check isday, precipitation, snowfall, cloud cover
+
+    #night(moon)
+    if all_weather_info[8] == 0.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25 :
         weather_icon = "assets/CLEAR0.png"
-    elif all_weather_info[8] == 1.0:
+
+    #day(sun)
+    elif all_weather_info[8] == 1.0 and all_weather_info[9]<2.4 and all_weather_info[13]==0 and all_weather_info[14]<25 :
         weather_icon = "assets/CLEAR1.png"
+
+    #day/night raining weakest
     elif all_weather_info[14] > 76 and all_weather_info[9] > 2.4 :
         weather_icon = "assets/HAIL.png"
-    # first 3
+    elif all_weather_info[14] > 50 and all_weather_info[9] > 2.4 and all_weather_info[8] == 0.0:
+        weather_icon = "assets/HAIL0.png"
+    elif all_weather_info[14] > 50 and all_weather_info[9] > 2.4 and all_weather_info[8] == 1.0:
+        weather_icon = "assets/HAIL1.png"
+
 
 
 
