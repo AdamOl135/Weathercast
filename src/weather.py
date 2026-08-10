@@ -30,6 +30,7 @@ def get_city(input_city:str):
 	# response info from server(json)
 	geocode_body = responses_geocoding.json()
 
+	print(geocode_body)
 	# given location to server and converted to coordinates and timezone
 	latitude_geocode = geocode_body["results"][0]["latitude"]
 	longitude_geocode = geocode_body["results"][0]["longitude"]
@@ -51,6 +52,7 @@ def get_city(input_city:str):
 		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall","cloud_cover"],
 		"timezone": f"{timezone_geocode}",
 		"minutely_15": "lightning_potential"
+		#"models":"dwd_icon_seamless"
 	}
 
 	#request to api
@@ -74,9 +76,7 @@ def get_city(input_city:str):
 		elevation = response_forecast.Elevation()
 		timezone = response_forecast.Timezone()
 		timezone_difference_toGMT0 =response_forecast.UtcOffsetSeconds()
-		print("forecast timezone",timezone)
-		print("forecast timezone difference to gmt0",timezone_difference_toGMT0)
-		print("forecast timezone difference to gmt0",type(timezone_difference_toGMT0),"\n")
+
 
 		# Process minutely_15 data
 		minutely_15 = response_forecast.Minutely15()
@@ -125,7 +125,7 @@ def get_city(input_city:str):
 		daily_temperature_2m_min = (daily.Variables(3).ValuesAsNumpy())[0]#1 week sliced to 1day
 		daily_temperature_2m_min_int = int(daily_temperature_2m_min)#converted to int
 
-
+	print("currentprecip",WeatherData.current_precipitation,"hourlyprecip",WeatherData.hourly_precipitation)
 	#needed values for app returned to main for usage
 	return [WeatherData.current_temperature,#0
 			WeatherData.current_apparent_temperature,#1
@@ -143,9 +143,12 @@ def get_city(input_city:str):
 			WeatherData.current_snowfall,#13
 			WeatherData.current_cloud_cover,#14
 			WeatherData.minutely_15_lightning_potential,#15
-			WeatherData.hourly_uv_index_1hour#16
+			WeatherData.hourly_uv_index_1hour,#16
+			geocode_body,#17
+			response_forecast,#18
+			WeatherData.current#19
 	#todo : metric to imperial coversion if requested
 	]
 
 
-print("lightning:",(get_city("Bangkok")[16]))
+#print("precip:",(get_city("Peniscockwiuo")[17]))

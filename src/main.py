@@ -14,8 +14,8 @@ st.set_page_config(
 with st.container(horizontal=True, horizontal_alignment = "distribute",width="stretch"):
 
     #logo & Title
-    logo = st.image(image="assets/PCLOUDY1.png",width = 35,output_format="PNG")
-    name = st.subheader(body="Weathercast",text_alignment="left",divider="grey")
+    logo = st.image(image="assets/PCLOUDY1.png",width = 45,output_format="PNG")
+    name = st.header(body="Weathercast",text_alignment="left")
 
     #spacing between elements
     st.space("stretch")
@@ -34,10 +34,13 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     icon=":material/search:",
     width=300)
 
-
     all_weather_info = get_city(search)
 
-    #st.text(type(all_weather_info))
+    #try :
+    #    all_weather_info = get_city(search)
+    #except KeyError:
+    #    st.text("Input a valid city name!")
+
 
     weather_icon = ""
 
@@ -51,10 +54,10 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     elif all_weather_info[8] == 1.0 and all_weather_info[9]<0.1 and all_weather_info[13]==0 and all_weather_info[14]<25:
         weather_icon = "assets/CLEAR1.png"
     #night raining weakest cloud second strongest
-    elif all_weather_info[8] == 0.0 and (0.2 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+    elif all_weather_info[8] == 0.0 and (0.1 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
     #day raining weakest cloud second strongest no snow
         weather_icon = "assets/HAIL0.png"
-    elif all_weather_info[8] == 1.0 and (0.2 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+    elif all_weather_info[8] == 1.0 and (0.1 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and all_weather_info[14] > 60:
         weather_icon = "assets/HAIL1.png"
     #night no precip cloud second strongest snow  strongest
     elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
@@ -66,29 +69,30 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     elif all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
         weather_icon = "assets/MCLOUDY.png"
     #night no precip cloud second strongest no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
         weather_icon = "assets/MCLOUDY0.png"
     #day no precip cloud second strongest no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
         weather_icon = "assets/MCLOUDY1.png"
     # night no precip cloud weakest no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] < 25:
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
         weather_icon = "assets/PCLOUDY0.png"
     # day no precip cloud weakest no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] < 25:
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25< all_weather_info[14] < 60 ):
         weather_icon = "assets/PCLOUDY1.png"
     #night strong precip second strongest cloud no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/SHOWER0"
+    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
+        weather_icon = "assets/SHOWER0.png"
     # day strong precip second strongest cloud no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/SHOWER1"
+    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
+        weather_icon = "assets/SHOWER1.png"
     # night light precip second strongest cloud snow
-    elif all_weather_info[8] == 0.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/SLEET0"
+    elif all_weather_info[8] == 0.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and all_weather_info[14] > 60:
+        weather_icon = "assets/SLEET0.png"
     # day light precip second strongest cloud snow
-    elif all_weather_info[8] == 1.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/SLEET1"
+    elif all_weather_info[8] == 1.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and all_weather_info[14] > 60:
+        weather_icon = "assets/SLEET1.png"
+    #else:
 
 
 
@@ -97,12 +101,6 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
 
 
 # middle row with most important information
-
-
-
-
-# spacing from top
-st.space("large")
 
 left,middle,right = st.columns(3,vertical_alignment="top",border=True,gap="large")
 
@@ -114,15 +112,17 @@ with left:
     with st.container(horizontal=True):
         st.metric(label=f"**Temperature**",value = f"{round(all_weather_info[0],1)}°C",icon = ":material/thermometer:",width="content")
         st.image(weather_icon,width="content")
+    st.divider()
     st.markdown(f"Feels like {round(all_weather_info[1],1)}°C")
     st.markdown(f"Daily max temp {all_weather_info[2]}°C")
     st.markdown(f"Daily min temp {all_weather_info[3]}°C")
 
 #middle column
 with middle :
+
     st.metric(label="**Humidity**", value=f"{round(all_weather_info[4], 1)}%", border=True,icon=":material/humidity_mid:")
     st.metric(label="**Wind Speed at 10m height**", value=f"{round(all_weather_info[5], 1)}km/h", border=True,icon=":material/air:")
-    st.metric(label="**UV**", value=f"{all_weather_info[16]}", border=True)
+    st.metric(label="**Precipitation**",value=f"{all_weather_info[9]}mm",border= True, icon = ":material/rainy:")
 
 
 #right column
@@ -132,10 +132,14 @@ with right:
 
     st.metric(label = "**Sunrise**",value = f"{all_weather_info[6][11:16]}",border = True,icon=":material/wb_twilight:")
     st.metric(label = "**Sunset**",value = f"{all_weather_info[7][11:16]}",border = True,icon=":material/wb_twilight_2:")
+    st.metric(label="**UV Value**", value=f"{all_weather_info[16]}", border=True,icon =":material/sunny:")
+
+#table with weekly information
+st.table()
 
 
 # bottom bar with info
-    with st.bottom:
-        with st.container(border=True, horizontal=True):
-            st.link_button(label = "github",url = "https://github.com/AdamOl135/Weathercast",type = "tertiary")
+with st.bottom:
+    with st.container(border=False, horizontal=True,horizontal_alignment="right"):
+        st.link_button(label = "**github**",url = "https://github.com/AdamOl135/Weathercast",type = "tertiary",)
 
