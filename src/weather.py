@@ -1,6 +1,8 @@
 import openmeteo_requests
 import requests
 import time
+from datetime import datetime, timezone
+import math
 
 
 #calling client
@@ -10,8 +12,11 @@ openmeteo = openmeteo_requests.Client()
 
 
 def get_city(input_city:str):
+	input_city = input_city.strip()
+	if len(input_city) < 2:
+		raise ValueError("Enter a city name with at least two letters.")
 	# GEOCODING
-	# minimum 3 letters for search to work / location or postal code
+	# location or postal code
 	url_geocoding = "https://geocoding-api.open-meteo.com/v1/search"
 
 	params_geocoding = {
@@ -20,17 +25,16 @@ def get_city(input_city:str):
 	}
 
 	# request to server
-	# temporary solution for api request spam (10000 per day)
-	time.sleep(1)
-	responses_geocoding = requests.get(url_geocoding, params=params_geocoding, timeout=1)
-	print("status code:", responses_geocoding.status_code)
+	responses_geocoding = requests.get(url_geocoding, params=params_geocoding, timeout=10)
+	responses_geocoding.raise_for_status()
 
 
 
 	# response info from server(json)
 	geocode_body = responses_geocoding.json()
 
-	print(geocode_body)
+	if not geocode_body.get("results"):
+		raise ValueError("City not found. Check the spelling and try again.")
 	# given location to server and converted to coordinates and timezone
 	latitude_geocode = geocode_body["results"][0]["latitude"]
 	longitude_geocode = geocode_body["results"][0]["longitude"]
@@ -47,25 +51,23 @@ def get_city(input_city:str):
 	params_forecast = {
 		"latitude": latitude_geocode,# params get passed from user input to geocoding to here
 		"longitude": longitude_geocode,#
-		"daily": ["sunrise", "sunset", "temperature_2m_max", "temperature_2m_min"],
+		"daily": ["sunrise", "sunset", "temperature_2m_max", "temperature_2m_min", "weather_code", "precipitation_sum"],
 		"hourly": ["temperature_2m", "precipitation","uv_index"],
-		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall","cloud_cover"],
+		"current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "is_day", "precipitation", "rain", "wind_speed_10m", "showers", "snowfall","cloud_cover", "weather_code"],
+		"forecast_days": 7,
 		"timezone": f"{timezone_geocode}",
 		"minutely_15": "lightning_potential"
 		#"models":"dwd_icon_seamless"
 	}
 
 	#request to api
-	# temporary solution for api request spam (10000 per day)
-	time.sleep(1)
-	responses_forecast = openmeteo.weather_api(url_forecast, params = params_forecast)
+	responses_forecast = openmeteo.weather_api(url_forecast, params = params_forecast, timeout=10)
 
 	#if more locations need processing -> for loop
 
 	response_forecast = responses_forecast[0]
 
 
-	print("FROM HERE FORECAST STATEMENTS\n")
 	#info from forecast api - time independent
 
 
@@ -85,7 +87,7 @@ def get_city(input_city:str):
 		#process current data (indexing dependent on params_forecast order)
 
 		current = response_forecast.Current()
-		current_time = current.Time()#unix ephttps://weathercast-app.streamlit.app/och (seconds since 1970)
+		current_time = current.Time()#unix epoch (seconds since 1970)
 		current_temperature = round((current.Variables(0).Value()),1)
 		current_relative_humidity = current.Variables(1).Value()
 		current_apparent_temperature = current.Variables(2).Value()
@@ -98,13 +100,16 @@ def get_city(input_city:str):
 		current_showers = current.Variables(7).Value()
 		current_snowfall = current.Variables(8).Value()
 		current_cloud_cover = current.Variables(9).Value()
+		current_weather_code = current.Variables(10).Value()
 
 		#process hourly data (indexing dependent on params_forecast order)
 		hourly = response_forecast.Hourly()
 		hourly_temperature = hourly.Variables(0).ValuesAsNumpy()#hours of 1 week
 		hourly_precipitation = hourly.Variables(1).ValuesAsNumpy()#hours of 1 week
 		hourly_uv_index = hourly.Variables(2).ValuesAsNumpy()
-		hourly_uv_index_1hour = int(hourly_uv_index[0])
+		hour_index = int((current_time - hourly.Time()) // hourly.Interval())
+		hour_index = max(0, min(hour_index, len(hourly_uv_index) - 1))
+		hourly_uv_index_1hour = round(float(hourly_uv_index[hour_index]), 1)
 
 		#process daily data (indexing dependent on params_forecast order)
 
@@ -118,14 +123,25 @@ def get_city(input_city:str):
 		daily_sunrise_gmtime_adjusted = time.asctime(time.gmtime(daily_sunrise + timezone_difference_toGMT0))
 		daily_sunset_gmtime_adjusted = time.asctime(time.gmtime(daily_sunset + timezone_difference_toGMT0))
 
-		#convert with slicing first and then to int
+		# today's high and low temperatures
 		daily_temperature_2m_max = (daily.Variables(2).ValuesAsNumpy())[0]#1 week sliced to 1day
-		daily_temperature_2m_max_int= int(daily_temperature_2m_max)#converted to int
+		daily_temperature_2m_max_int= round(float(daily_temperature_2m_max), 1)
 
 		daily_temperature_2m_min = (daily.Variables(3).ValuesAsNumpy())[0]#1 week sliced to 1day
-		daily_temperature_2m_min_int = int(daily_temperature_2m_min)#converted to int
+		daily_temperature_2m_min_int = round(float(daily_temperature_2m_min), 1)
 
-	print("currentprecip",WeatherData.current_precipitation,"hourlyprecip",WeatherData.hourly_precipitation)
+	# Keep the existing current-weather list; append the seven daily forecasts.
+	weekly_forecast = []
+	daily = WeatherData.daily
+	for index, timestamp in enumerate(range(daily.Time(), daily.TimeEnd(), daily.Interval())):
+		weekly_forecast.append({
+			"date": datetime.fromtimestamp(timestamp + WeatherData.timezone_difference_toGMT0, timezone.utc).date(),
+			"temperature_max": float(daily.Variables(2).ValuesAsNumpy()[index]),
+			"temperature_min": float(daily.Variables(3).ValuesAsNumpy()[index]),
+			"weather_code": float(daily.Variables(4).ValuesAsNumpy()[index]),
+			"precipitation": float(daily.Variables(5).ValuesAsNumpy()[index]),
+		})
+
 	#needed values for app returned to main for usage
 	return [WeatherData.current_temperature,#0
 			WeatherData.current_apparent_temperature,#1
@@ -146,6 +162,35 @@ def get_city(input_city:str):
 			WeatherData.hourly_uv_index_1hour,#16
 			geocode_body,#17
 			response_forecast,#18
-			WeatherData.current#19
+			WeatherData.current,#19
+			weekly_forecast,#20
+			WeatherData.current_weather_code,#21
 	#todo : metric to imperial coversion if requested
 	]
+
+
+def get_weather_icon(weather_code, is_day=1):
+	"""Return an existing icon and description for an Open-Meteo weather code."""
+	variant = 1 if is_day else 0
+	if not math.isfinite(weather_code):
+		return "assets/MCLOUDY.png", "Unavailable"
+	code = int(weather_code)
+	if code in (0, 1):
+		return f"assets/CLEAR{variant}.png", "Clear" if code == 0 else "Mainly clear"
+	if code == 2:
+		return f"assets/PCLOUDY{variant}.png", "Partly cloudy"
+	if code == 3:
+		return "assets/MCLOUDY.png", "Overcast"
+	if code in (45, 48):
+		return "assets/MCLOUDY.png", "Fog"
+	if code in (51, 53, 55):
+		return f"assets/SHOWER{variant}.png", "Drizzle"
+	if code in (56, 57, 66, 67):
+		return f"assets/SLEET{variant}.png", "Freezing rain"
+	if code in (61, 63, 65, 80, 81, 82):
+		return f"assets/SHOWER{variant}.png", "Rain"
+	if code in (71, 73, 75, 77, 85, 86):
+		return f"assets/LSNOW{variant}.png", "Snow"
+	if code in (95, 96, 97, 99):
+		return f"assets/TSTORM{variant}.png", "Thunderstorm"
+	return "assets/MCLOUDY.png", "Unavailable"

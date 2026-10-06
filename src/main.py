@@ -1,5 +1,17 @@
 import streamlit as st
-from weather import get_city
+import requests
+import math
+from openmeteo_requests import OpenMeteoRequestsError
+from weather import get_city, get_weather_icon
+
+
+@st.cache_data(ttl=600, max_entries=128, show_spinner=False)
+def load_weather(city):
+    return get_city(city)
+
+
+def format_forecast_value(value, unit):
+    return f"{value:.1f}{unit}" if math.isfinite(value) else "Unavailable"
 
 st.set_page_config(
     page_title="Weathercast",
@@ -34,70 +46,17 @@ with st.container(horizontal=True, horizontal_alignment = "distribute",width="st
     icon=":material/search:",
     width=300)
 
-    all_weather_info = get_city(search)
-
-    #try :
-    #    all_weather_info = get_city(search)
-    #except KeyError:
-    #    st.text("Input a valid city name!")
-
-
-    weather_icon = ""
-
-    #checking weather condition and changing icon based on it (lightning still to be added)
-    # all ifs have to check isday(8), precipitation(9), snowfall(13), cloud cover(14)
-
-    #night(moon)
-    if all_weather_info[8] == 0.0 and all_weather_info[9]<0.1 and all_weather_info[13]==0 and all_weather_info[14]<25:
-        weather_icon = "assets/CLEAR0.png"
-    #day(sun)
-    elif all_weather_info[8] == 1.0 and all_weather_info[9]<0.1 and all_weather_info[13]==0 and all_weather_info[14]<25:
-        weather_icon = "assets/CLEAR1.png"
-    #night raining weakest cloud second strongest
-    elif all_weather_info[8] == 0.0 and (0.1 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
-    #day raining weakest cloud second strongest no snow
-        weather_icon = "assets/HAIL0.png"
-    elif all_weather_info[8] == 1.0 and (0.1 > all_weather_info[9] > 2.5) and all_weather_info[13] == 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/HAIL1.png"
-    #night no precip cloud second strongest snow  strongest
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/LSNOW0.png"
-    # day no precip cloud second strongest snow strongest
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] > 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/LSNOW1.png"
-    #day/night cloud strongest no snow no precipitation
-    elif all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/MCLOUDY.png"
-    #night no precip cloud second strongest no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/MCLOUDY0.png"
-    #day no precip cloud second strongest no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/MCLOUDY1.png"
-    # night no precip cloud weakest no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25 < all_weather_info[14] < 60):
-        weather_icon = "assets/PCLOUDY0.png"
-    # day no precip cloud weakest no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] < 0.1 and all_weather_info[13] == 0 and (25< all_weather_info[14] < 60 ):
-        weather_icon = "assets/PCLOUDY1.png"
-    #night strong precip second strongest cloud no snow
-    elif all_weather_info[8] == 0.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
-        weather_icon = "assets/SHOWER0.png"
-    # day strong precip second strongest cloud no snow
-    elif all_weather_info[8] == 1.0 and all_weather_info[9] > 2.5 and all_weather_info[13] == 0 and  all_weather_info[14] > 60:
-        weather_icon = "assets/SHOWER1.png"
-    # night light precip second strongest cloud snow
-    elif all_weather_info[8] == 0.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/SLEET0.png"
-    # day light precip second strongest cloud snow
-    elif all_weather_info[8] == 1.0 and (0.1 < all_weather_info[9] < 2.5) and all_weather_info[13] > 0 and all_weather_info[14] > 60:
-        weather_icon = "assets/SLEET1.png"
-    #else:
+    try:
+        all_weather_info = load_weather(search.strip())
+    except ValueError as error:
+        st.warning(str(error))
+        st.stop()
+    except (requests.RequestException, OpenMeteoRequestsError):
+        st.error("Weather data is unavailable. Please try again shortly.")
+        st.stop()
 
 
-
-
-#todo : seperated words cannot be input into search, fix
+    weather_icon, _ = get_weather_icon(all_weather_info[21], all_weather_info[8])
 
 
 # middle row with most important information
@@ -134,8 +93,20 @@ with right:
     st.metric(label = "**Sunset**",value = f"{all_weather_info[7][11:16]}",border = True,icon=":material/wb_twilight_2:")
     st.metric(label="**UV Value**", value=f"{all_weather_info[16]}", border=True,icon =":material/sunny:")
 
-#table with weekly information
-st.table()
+
+# weekly weather below the existing current-weather panels
+st.subheader("Weekly forecast")
+with st.container(horizontal=True, gap="small"):
+    for index, day in enumerate(all_weather_info[20]):
+        with st.container(border=True, width=150):
+            st.markdown("**Today**" if index == 0 else f"**{day['date']:%A}**")
+            st.caption(f"{day['date']:%d %b}")
+            icon, condition = get_weather_icon(day["weather_code"])
+            st.image(icon, width=55)
+            st.markdown(condition)
+            st.markdown(f"High {format_forecast_value(day['temperature_max'], '°C')}")
+            st.caption(f"Low {format_forecast_value(day['temperature_min'], '°C')}")
+            st.caption(f"Precipitation  \n{format_forecast_value(day['precipitation'], ' mm')}")
 
 
 # bottom bar with info
