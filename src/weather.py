@@ -149,6 +149,3 @@ def get_city(input_city:str):
 			WeatherData.current#19
 	#todo : metric to imperial coversion if requested
 	]
-
-
-#print("precip:",(get_city("Peniscockwiuo")[17]))
